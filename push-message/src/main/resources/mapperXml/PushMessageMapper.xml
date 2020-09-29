@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yx.mapper.PushMessageMapper">
+
+   <select id="getListGroupObjId"  resultType="com.yx.entity.PushMessageVo">
+    SELECT
+	pme.*,
+    (select COUNT(1) from push_message pum where  pum.receiveUserId = #{receiveUserId}  
+    and pum.state =#{state} and pum.objId = pme.objId ) as msgCount
+   FROM
+	push_message pme
+   where pme.receiveUserId = #{receiveUserId}  
+   and pme.state =#{state} and (pme.objId,pme.createDate) in
+	(
+		SELECT DISTINCT
+			pm.objId,max(pm.createDate)
+		FROM
+			push_message pm
+		WHERE
+      pm.receiveUserId = #{receiveUserId}  and pm.state =#{state}
+    GROUP BY pm.objId
+	)  ORDER BY pme.issueId desc
+    </select>
+    
+    
+     <select id="getListGroup"  resultType="com.yx.entity.PushMessageVo">
+    SELECT
+	pme.*,
+    (select COUNT(1) from push_message pum where  pum.receiveUserId = #{receiveUserId}  
+    and pum.state =#{state} and pum.objId = pme.objId ) as msgCount
+   FROM
+	push_message pme
+   where pme.receiveUserId = #{receiveUserId}  
+   and pme.state =#{state} and  pme.type !=3 and  (pme.objId,pme.createDate) in
+	(
+		SELECT DISTINCT
+			pm.objId,max(pm.createDate)
+		FROM
+			push_message pm
+		WHERE
+      pm.receiveUserId = #{receiveUserId}  and pm.state =#{state} and pm.type !=3 
+    GROUP BY pm.objId
+	)  ORDER BY pme.issueId desc
+    </select>
+
+
+</mapper>

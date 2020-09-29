@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Implementation-Title: push-message
+Implementation-Version: 1.0.0
+Built-By: Administrator
+Implementation-Vendor-Id: websocket
+Build-Jdk: 1.8.0_221
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
+ ot-starter-parent/push-message
+Created-By: Maven Integration for Eclipse
+

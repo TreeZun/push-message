@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="300000">
+    <jmxConfigurator/>
+
+    <contextName>push-message</contextName>
+
+
+    <!-- For Run -->
+    <property name="root.logger.level" value="DEBUG"/>
+    <property name="log.path" value="/IDEAspace/data/logs"/>
+    <!--<property name="log.path" value="/Users/pasenger/var/log"/>-->
+    <property name="app.name" value="push-message"/>
+    <property name="app.version" value="1.0.0"/>
+
+    <property name="log.file" value="${log.path}/${app.name}-${app.version}/${app.name}.%d{yyyyMMdd}.%i.log.gz"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--时间戳|应用标识|版本标识|类名方法名行号|日志级别|[请求/响应标识]|来源IP/日志详细内容-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}|%logger{10}-%line|%5p|%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <ImmediateFlush>true</ImmediateFlush>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}|%logger{10}-%line|%5p|%msg%n</pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.file}</FileNamePattern>
+            <MaxHistory>60</MaxHistory>
+
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="asyncFileAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>5000</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="fileAppender"/>
+    </appender>
+
+    <!-- 如果要输出业务日志, 请修改为TRACE -->
+    <logger name="org.springframework" level="ERROR"></logger>
+    <logger name="ch.qos.logback" level="OFF"></logger>
+    <logger name="org.hibernate" level="ERROR"></logger>
+    <logger name="org.springframework" level="ERROR"></logger>
+    <logger name="org.apache.catalina" level="ERROR"></logger>
+    <logger name="org.thymeleaf" level="ERROR"></logger>
+    <logger name="org.apache.axis.ConfigurationException" level="INFO"></logger>
+    <root level="${root.logger.level}">
+        <appender-ref ref="asyncFileAppender"/>
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
